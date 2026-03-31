@@ -1,0 +1,76 @@
+{{- /* Auto-generated from .chezmoidata/manifest.toml — DO NOT EDIT MANUALLY */ -}}
+
+{{- /* ─── Skills（ディレクトリ単位でarchive取得） ─── */ -}}
+{{- if hasKey . "skills" }}
+{{- range .skills }}
+{{-   $repoData := index $.repos .repo }}
+{{-   $skillName := .name }}
+{{-   $url := printf "https://github.com/%s/%s/archive/%s.tar.gz" $repoData.owner $repoData.name .ref }}
+{{-   $stripComponents := add 1 (len (splitList "/" .path)) }}
+{{-   $includePattern := printf "*/%s/**" .path }}
+{{-   $refreshPeriod := "" }}
+{{-   if hasKey . "refreshPeriod" }}{{ $refreshPeriod = .refreshPeriod }}{{ end }}
+{{-   range .targets }}
+{{-     $targetDir := "" }}
+{{-     if eq . "codex" }}{{ $targetDir = ".codex" }}{{ end }}
+{{-     if eq . "claude" }}{{ $targetDir = ".claude" }}{{ end }}
+
+["{{ $targetDir }}/skills/{{ $skillName }}"]
+    type = "archive"
+    url = {{ $url | quote }}
+    exact = true
+    stripComponents = {{ $stripComponents }}
+    include = [{{ $includePattern | quote }}]
+{{-     if $refreshPeriod }}
+    refreshPeriod = {{ $refreshPeriod | quote }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+{{- end }}
+
+{{- /* ─── Agents ─── */ -}}
+{{- /* path が .md で終わる → file取得（単一ファイル）              */ -}}
+{{- /* path が .md で終わらない → archive取得（ディレクトリまるごと） */ -}}
+{{- if hasKey . "agents" }}
+{{- range .agents }}
+{{-   $repoData := index $.repos .repo }}
+{{-   $agentName := .name }}
+{{-   $agentPath := .path }}
+{{-   $agentRef := .ref }}
+{{-   $refreshPeriod := "" }}
+{{-   if hasKey . "refreshPeriod" }}{{ $refreshPeriod = .refreshPeriod }}{{ end }}
+{{-   $isFile := hasSuffix ".md" $agentPath }}
+{{-   range .targets }}
+{{-     $targetDir := "" }}
+{{-     if eq . "codex" }}{{ $targetDir = ".codex" }}{{ end }}
+{{-     if eq . "claude" }}{{ $targetDir = ".claude" }}{{ end }}
+{{-     if $isFile }}
+{{-       $pathDir := dir $agentPath }}
+{{-       $fileUrl := printf "https://raw.githubusercontent.com/%s/%s/%s/%s" $repoData.owner $repoData.name $agentRef $agentPath }}
+{{-       if and (ne $pathDir ".") (ne $pathDir "") }}
+
+["{{ $targetDir }}/agents/{{ $pathDir }}/{{ $agentName }}.md"]
+{{-       else }}
+
+["{{ $targetDir }}/agents/{{ $agentName }}.md"]
+{{-       end }}
+    type = "file"
+    url = {{ $fileUrl | quote }}
+{{-     else }}
+{{-       $archiveUrl := printf "https://github.com/%s/%s/archive/%s.tar.gz" $repoData.owner $repoData.name $agentRef }}
+{{-       $stripComponents := add 1 (len (splitList "/" $agentPath)) }}
+{{-       $includePattern := printf "*/%s/**" $agentPath }}
+
+["{{ $targetDir }}/agents/{{ $agentName }}"]
+    type = "archive"
+    url = {{ $archiveUrl | quote }}
+    exact = true
+    stripComponents = {{ $stripComponents }}
+    include = [{{ $includePattern | quote }}]
+{{-     end }}
+{{-     if $refreshPeriod }}
+    refreshPeriod = {{ $refreshPeriod | quote }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+{{- end }}

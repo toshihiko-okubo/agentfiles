@@ -1,0 +1,360 @@
+# AI Agent Skills & Agents Manifest
+# スキル・エージェントの追加・削除・バージョン変更はこのファイルを編集してください
+#
+# ─── フィールド説明 ───
+#
+# [repos.*]        - GitHubリポジトリ定義（owner, name）
+#
+# [[skills]]       - スキル定義（ディレクトリ単位で取得）
+#   name           - スキル名（インストール先ディレクトリ名）
+#   repo           - repos.* のキー名
+#   ref            - git tag / branch / commit SHA
+#   path           - リポジトリ内のスキルディレクトリパス
+#   targets        - インストール先 ["codex"], ["claude"], ["codex","claude"]
+#   refreshPeriod  - branch追跡時の再取得間隔（任意。例: "168h"）
+#
+# [[agents]]       - エージェント定義（単一.mdファイルとして取得）
+#   name           - ファイル名（拡張子なし。配置先: ~/.claude/agents/{name}.md）
+#   repo           - repos.* のキー名
+#   ref            - git tag / branch / commit SHA
+#   path           - リポジトリ内の.mdファイルパス
+#   targets        - インストール先 ["claude"]
+#   refreshPeriod  - 任意
+#
+# [[plugins]]      - Claude Code プラグイン定義（chezmoi apply 時に自動インストール）
+#   name           - プラグイン名
+#   marketplace       - レジストリ名（例: "anthropics/claude-plugins-official"）
+#   scope          - インストールスコープ: "user"(デフォルト), "project", "local"
+
+# ─── リポジトリ定義 ───
+
+[repos.openai-skills]
+owner = "openai"
+name = "skills"
+
+[repos.vercel-labs-skills]
+owner = "vercel-labs"
+name = "skills"
+
+[repos.agency-agents]
+owner = "msitarzewski"
+name = "agency-agents"
+
+# ─── スキル定義（ディレクトリ単位） ───
+# openai/skills: https://github.com/openai/skills/tree/main/skills
+#
+# [[skills]]
+# name = "vercel-deploy"
+# repo = "openai-skills"
+# ref = "main"
+# path = "skills/.curated/vercel-deploy"
+# targets = ["codex", "claude"]
+# refreshPeriod = "168h"
+
+[[skills]]
+name = "skill-installer"
+repo = "openai-skills"
+ref = "main"
+path = "skills/.system/skill-installer"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+[[skills]]
+name = "find-skills"
+repo = "vercel-labs-skills"
+ref = "main"
+path = "skills/find-skills"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+# ─── エージェント定義（単一.mdファイル） ───
+# agency-agents: https://github.com/msitarzewski/agency-agents
+# カテゴリ: engineering/, design/, product/, testing/, support/,
+#           marketing/, sales/, project-management/, strategy/,
+#           specialized/, integrations/, spatial-computing/, game-development/
+#
+# 単一ファイル: path が .md で終わる → file取得
+# [[agents]]
+# name = "engineering-backend-architect"
+# repo = "agency-agents"
+# ref = "main"
+# path = "engineering/engineering-backend-architect.md"
+# targets = ["claude"]
+# refreshPeriod = "168h"
+
+# ディレクトリまるごと: path が .md で終わらない → archive取得
+[[agents]]
+name = "design-ux-architect"
+repo = "agency-agents"
+ref = "main"
+path = "design/design-ux-architect.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "design-ux-researcher"
+repo = "agency-agents"
+ref = "main"
+path = "design/design-ux-researcher.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-autonomous-optimization-architect"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-autonomous-optimization-architect.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-backend-architect"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-backend-architect.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-code-reviewer"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-code-reviewer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-devops-automator"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-devops-automator.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-devops-automator"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-frontend-developer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-git-workflow-master"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-git-workflow-master.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-incident-response-commander"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-incident-response-commander.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-security-engineer"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-security-engineer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-software-architect"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-software-architect.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-sre"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-sre.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-technical-writer"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-technical-writer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "engineering-threat-detection-engineer"
+repo = "agency-agents"
+ref = "main"
+path = "engineering/engineering-threat-detection-engineer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "product-product-manager"
+repo = "agency-agents"
+ref = "main"
+path = "product/product-manager.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "project-management-project-management-experiment-tracker"
+repo = "agency-agents"
+ref = "main"
+path = "project-management/project-management-experiment-tracker.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "project-management-project-manager-senior"
+repo = "agency-agents"
+ref = "main"
+path = "project-management/project-manager-senior.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "specialized-agents-orchestrator"
+repo = "agency-agents"
+ref = "main"
+path = "specialized/agents-orchestrator.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "specialized-blockchain-security-auditor"
+repo = "agency-agents"
+ref = "main"
+path = "specialized/blockchain-security-auditor.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "specialized-developer-advocate"
+repo = "agency-agents"
+ref = "main"
+path = "specialized/specialized-developer-advocate.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "specialized-document-generator"
+repo = "agency-agents"
+ref = "main"
+path = "specialized/specialized-document-generator.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "specialized-workflow-architect"
+repo = "agency-agents"
+ref = "main"
+path = "specialized/specialized-workflow-architect.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "support-infrastructure-maintainer"
+repo = "agency-agents"
+ref = "main"
+path = "support/support-infrastructure-maintainer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-api-tester"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-api-tester.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-performance-benchmarker"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-performance-benchmarker.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-reality-checker"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-reality-checker.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-test-results-analyzer"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-test-results-analyzer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-tool-evaluator"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-tool-evaluator.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+[[agents]]
+name = "testing-workflow-optimizer"
+repo = "agency-agents"
+ref = "main"
+path = "testing/testing-workflow-optimizer.md"
+targets = ["claude"]
+refreshPeriod = "168h"
+
+# ─── Claude Code プラグイン ───
+# chezmoi apply 時に run_onchange スクリプトで自動インストール
+# 未登録のマーケットプレイスも自動登録される
+#
+# [[plugins]]
+# name = "code-review"
+# marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "code-review"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "commit-commands"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "context7"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "security-guidance"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "claude-md-management"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "feature-dev"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "code-simplifier"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "skill-creator"
+marketplace = "anthropics/claude-plugins-official"
+
+[[plugins]]
+name = "superpowers"
+marketplace = "anthropics/claude-plugins-official"
