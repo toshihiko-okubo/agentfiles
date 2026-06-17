@@ -52,6 +52,22 @@ name = "agency-agents"
 # refreshPeriod = "168h"
 
 [[skills]]
+name = "plugin-creator"
+repo = "openai-skills"
+ref = "main"
+path = "skills/.system/plugin-creator"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+[[skills]]
+name = "skill-creator"
+repo = "openai-skills"
+ref = "main"
+path = "skills/.system/skill-creator"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+[[skills]]
 name = "skill-installer"
 repo = "openai-skills"
 ref = "main"
@@ -132,7 +148,7 @@ targets = ["claude"]
 refreshPeriod = "168h"
 
 [[agents]]
-name = "engineering-devops-automator"
+name = "engineering-frontend-developer"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-frontend-developer.md"
@@ -156,10 +172,10 @@ targets = ["claude"]
 refreshPeriod = "168h"
 
 [[agents]]
-name = "engineering-security-engineer"
+name = "security-architect"
 repo = "agency-agents"
 ref = "main"
-path = "engineering/engineering-security-engineer.md"
+path = "security/security-architect.md"
 targets = ["claude"]
 refreshPeriod = "168h"
 
@@ -188,10 +204,10 @@ targets = ["claude"]
 refreshPeriod = "168h"
 
 [[agents]]
-name = "engineering-threat-detection-engineer"
+name = "security-threat-detection-engineer"
 repo = "agency-agents"
 ref = "main"
-path = "engineering/engineering-threat-detection-engineer.md"
+path = "security/security-threat-detection-engineer.md"
 targets = ["claude"]
 refreshPeriod = "168h"
 
@@ -228,10 +244,10 @@ targets = ["claude"]
 refreshPeriod = "168h"
 
 [[agents]]
-name = "specialized-blockchain-security-auditor"
+name = "security-blockchain-security-auditor"
 repo = "agency-agents"
 ref = "main"
-path = "specialized/blockchain-security-auditor.md"
+path = "security/security-blockchain-security-auditor.md"
 targets = ["claude"]
 refreshPeriod = "168h"
 
