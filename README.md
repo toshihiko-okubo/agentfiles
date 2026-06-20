@@ -35,34 +35,25 @@ targets = ["codex", "claude"]
 refreshPeriod = "168h"
 ```
 
-### エージェントの追加
+### agency-agents の追加
 
-`[[agents]]` エントリを追加。`path` の形式で取得方式が自動判定される:
+`[[agency_agents]]` エントリを追加。upstream の `scripts/install.sh` / `scripts/convert.sh` を使ってインストールされる。
 
-- `.md` で終わる → 単一ファイル取得（`~/.claude/agents/{dir}/{name}.md`）
-- `.md` で終わらない → ディレクトリまるごと取得（`~/.claude/agents/{name}/`）
+- Claude Code: upstream の Markdown agent を `~/.claude/agents/` に配置
+- Codex: upstream の `convert.sh --tool codex` で TOML に変換し、`~/.codex/agents/` に配置
+- その他repoのagentは `[[agents]]` で従来通り `.chezmoiexternal.toml.tmpl` から直接取得
 
 ```toml
 [repos.agency-agents]
 owner = "msitarzewski"
 name = "agency-agents"
 
-# ディレクトリまるごと（engineeringカテゴリの全エージェント）
-[[agents]]
-name = "engineering"
-repo = "agency-agents"
-ref = "main"
-path = "engineering"
-targets = ["claude"]
-refreshPeriod = "168h"
-
 # 単一ファイル
-[[agents]]
+[[agency_agents]]
 name = "engineering-backend-architect"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-backend-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 ```
 
@@ -77,6 +68,8 @@ dot_claude/
   hooks/{script}              → ~/.claude/hooks/{script}
 dot_codex/
   skills/{name}/SKILL.md     → ~/.codex/skills/{name}/SKILL.md
+  agents/{name}.toml          → ~/.codex/agents/{name}.toml
+  hooks/{script}              → ~/.codex/hooks/{script}
 ```
 
 既存ファイルの取り込み:
@@ -112,13 +105,25 @@ chezmoi apply
 | `targets` | インストール先 | `["codex"]`, `["claude"]`, `["codex","claude"]` |
 | `refreshPeriod` | 再取得間隔（任意） | `"168h"` |
 
-### `[[agents]]` — 単一ファイル
+### `[[agency_agents]]` — agency-agents
 
 | フィールド | 説明 | 例 |
 |-----------|------|-----|
-| `name` | ファイル名（拡張子なし） | `"engineering-backend-architect"` |
-| `repo` | `[repos.*]` のキー名 | `"agency-agents"` |
+| `name` | 管理名 | `"engineering-backend-architect"` |
 | `ref` | git tag / branch / commit SHA | `"main"` |
-| `path` | リポジトリ内の.mdファイルパス | `"engineering/engineering-backend-architect.md"` |
-| `targets` | インストール先 | `["claude"]` |
+| `path` | agency-agents内の.mdファイルパス | `"engineering/engineering-backend-architect.md"` |
+| `targets` | インストール先 | `["codex"]`, `["claude"]`, `["codex","claude"]` |
+| `refreshPeriod` | 再取得間隔（任意） | `"168h"` |
+
+`refreshPeriod` は直接取得には使われない。`chezmoi apply` 時に `run_install-agency-agents.sh.tmpl` が cached clone を更新し、選択された agent を upstream installer 経由で再インストールする。
+
+### `[[agents]]` — その他repoのagent
+
+| フィールド | 説明 | 例 |
+|-----------|------|-----|
+| `name` | ファイル名（拡張子なし） | `"custom-agent"` |
+| `repo` | `[repos.*]` のキー名 | `"my-agents"` |
+| `ref` | git tag / branch / commit SHA | `"main"` |
+| `path` | リポジトリ内の.mdファイルパスまたはディレクトリ | `"agents/custom-agent.md"` |
+| `targets` | インストール先 | `["codex"]`, `["claude"]`, `["codex","claude"]` |
 | `refreshPeriod` | 再取得間隔（任意） | `"168h"` |

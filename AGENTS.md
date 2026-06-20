@@ -21,7 +21,11 @@ dot_codex/                           # ローカル管理ファイル → ~/.cod
 
 外部リソース（GitHub）:
 - `[[skills]]`: archive取得 → `~/.codex/skills/` or `~/.claude/skills/`
-- `[[agents]]`: file取得 → `targets` に応じて `~/.codex/agents/` および `~/.claude/agents/`
+- `[[agency_agents]]`: agency-agents のインストール対象
+  - upstream推奨の `scripts/install.sh` / `scripts/convert.sh` を `run_install-agency-agents.sh.tmpl` から実行
+  - Claude Code: Markdown agentを `~/.claude/agents/` に配置
+  - Codex: `convert.sh --tool codex` でTOMLに変換して `~/.codex/agents/` に配置
+- `[[agents]]`: その他repoの外部agent定義（`.chezmoiexternal.toml.tmpl` で file/archive 取得）
   - path が `.md` で終わる → 単一ファイル取得
   - path が `.md` で終わらない → ディレクトリまるごとarchive取得
 - `[[claude_marketplaces]]` / `[[claude_plugins]]`: `chezmoi apply` 時に `claude plugin install` で自動インストール（`dot_claude/run_onchange_install-plugins.sh.tmpl`）

@@ -13,8 +13,15 @@
 #   targets        - インストール先 ["codex"], ["claude"], ["codex","claude"]
 #   refreshPeriod  - branch追跡時の再取得間隔（任意。例: "168h"）
 #
-# [[agents]]       - エージェント定義（単一.mdファイルとして取得）
-#   name           - ファイル名（拡張子なし。配置先: {target}/agents/{name}.md）
+# [[agency_agents]] - agency-agents のインストール対象
+#   name           - 管理名
+#   ref            - git tag / branch / commit SHA
+#   path           - agency-agents内の.mdファイルパス
+#   targets        - インストール先 ["codex"], ["claude"], ["codex","claude"]
+#   refreshPeriod  - 任意
+#
+# [[agents]]       - その他repoのエージェント定義（単一.mdファイルまたはディレクトリとして取得）
+#   name           - ファイル名（拡張子なし）
 #   repo           - repos.* のキー名
 #   ref            - git tag / branch / commit SHA
 #   path           - リポジトリ内の.mdファイルパス
@@ -83,249 +90,220 @@ path = "skills/find-skills"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-# ─── エージェント定義（単一.mdファイル） ───
+# ─── agency-agents インストール対象 ───
 # agency-agents: https://github.com/msitarzewski/agency-agents
+# agency-agents は upstream 推奨の install.sh / convert.sh で導入する。
+# Claude Code はMarkdown、Codex は TOML へ変換された custom agent を使用。
 # カテゴリ: engineering/, design/, product/, testing/, support/,
 #           marketing/, sales/, project-management/, strategy/,
 #           specialized/, integrations/, spatial-computing/, game-development/
 #
-# 単一ファイル: path が .md で終わる → file取得
-# [[agents]]
+# 単一ファイルを指定
+# [[agency_agents]]
 # name = "engineering-backend-architect"
-# repo = "agency-agents"
 # ref = "main"
 # path = "engineering/engineering-backend-architect.md"
 # targets = ["codex", "claude"]
 # refreshPeriod = "168h"
 
-# ディレクトリまるごと: path が .md で終わらない → archive取得
-[[agents]]
+[[agency_agents]]
 name = "design-ux-architect"
-repo = "agency-agents"
 ref = "main"
 path = "design/design-ux-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "design-ux-researcher"
-repo = "agency-agents"
 ref = "main"
 path = "design/design-ux-researcher.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-autonomous-optimization-architect"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-autonomous-optimization-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-backend-architect"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-backend-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-code-reviewer"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-code-reviewer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-devops-automator"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-devops-automator.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-frontend-developer"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-frontend-developer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-git-workflow-master"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-git-workflow-master.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-incident-response-commander"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-incident-response-commander.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "security-architect"
-repo = "agency-agents"
 ref = "main"
 path = "security/security-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-software-architect"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-software-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-sre"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-sre.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "engineering-technical-writer"
-repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-technical-writer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "security-threat-detection-engineer"
-repo = "agency-agents"
 ref = "main"
 path = "security/security-threat-detection-engineer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "product-product-manager"
-repo = "agency-agents"
 ref = "main"
 path = "product/product-manager.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "project-management-project-management-experiment-tracker"
-repo = "agency-agents"
 ref = "main"
 path = "project-management/project-management-experiment-tracker.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "project-management-project-manager-senior"
-repo = "agency-agents"
 ref = "main"
 path = "project-management/project-manager-senior.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "specialized-agents-orchestrator"
-repo = "agency-agents"
 ref = "main"
 path = "specialized/agents-orchestrator.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "security-blockchain-security-auditor"
-repo = "agency-agents"
 ref = "main"
 path = "security/security-blockchain-security-auditor.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "specialized-developer-advocate"
-repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-developer-advocate.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "specialized-document-generator"
-repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-document-generator.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "specialized-workflow-architect"
-repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-workflow-architect.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "support-infrastructure-maintainer"
-repo = "agency-agents"
 ref = "main"
 path = "support/support-infrastructure-maintainer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-api-tester"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-api-tester.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-performance-benchmarker"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-performance-benchmarker.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-reality-checker"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-reality-checker.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-test-results-analyzer"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-test-results-analyzer.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-tool-evaluator"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-tool-evaluator.md"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
-[[agents]]
+[[agency_agents]]
 name = "testing-workflow-optimizer"
-repo = "agency-agents"
 ref = "main"
 path = "testing/testing-workflow-optimizer.md"
 targets = ["codex", "claude"]

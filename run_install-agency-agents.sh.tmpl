@@ -1,0 +1,161 @@
+#!/bin/bash
+# Auto-generated from .chezmoidata/manifest.toml — DO NOT EDIT MANUALLY
+# agency-agents は upstream の install.sh/convert.sh で Claude Code / Codex に導入する。
+
+set -euo pipefail
+
+repo_owner="{{ (index .repos "agency-agents").owner }}"
+repo_name="{{ (index .repos "agency-agents").name }}"
+repo_url="https://github.com/${repo_owner}/${repo_name}.git"
+cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/agentfiles"
+repo_dir="${cache_root}/agency-agents"
+ref="{{- $ref := "" -}}{{- range .agency_agents -}}{{- if eq $ref "" -}}{{- $ref = .ref -}}{{- end -}}{{- end -}}{{ $ref }}"
+
+{{- $claudePaths := list -}}
+{{- $codexPaths := list -}}
+{{- range .agency_agents -}}
+{{-   if has "claude" .targets -}}{{- $claudePaths = append $claudePaths .path -}}{{- end -}}
+{{-   if has "codex" .targets -}}{{- $codexPaths = append $codexPaths .path -}}{{- end -}}
+{{- end }}
+claude_paths=(
+{{- range $claudePaths }}
+    "{{ . }}"
+{{- end }}
+)
+
+codex_paths=(
+{{- range $codexPaths }}
+    "{{ . }}"
+{{- end }}
+)
+
+log() {
+    echo "[agency-agents] $*"
+}
+
+have_any_paths() {
+    [[ ${#claude_paths[@]} -gt 0 || ${#codex_paths[@]} -gt 0 ]]
+}
+
+ensure_repo() {
+    if ! command -v git &>/dev/null; then
+        log "git not found, skipping agency-agents installation"
+        return 1
+    fi
+
+    mkdir -p "$cache_root"
+
+    if [[ ! -d "$repo_dir/.git" ]]; then
+        log "Cloning ${repo_url}..."
+        if ! git clone "$repo_url" "$repo_dir"; then
+            log "clone failed, skipping agency-agents installation"
+            return 1
+        fi
+    else
+        log "Updating cached agency-agents repo..."
+        git -C "$repo_dir" fetch --prune origin || log "fetch failed; using cached checkout"
+    fi
+
+    if [[ -n "$ref" ]]; then
+        git -C "$repo_dir" checkout "$ref" || {
+            log "checkout failed for ref ${ref}, skipping agency-agents installation"
+            return 1
+        }
+        git -C "$repo_dir" pull --ff-only origin "$ref" 2>/dev/null || true
+    fi
+}
+
+write_agents_file() {
+    local output="$1"
+    shift
+    : > "$output"
+
+    # shellcheck source=/dev/null
+    source "$repo_dir/scripts/lib.sh"
+
+    local path slug
+    for path in "$@"; do
+        if [[ ! -f "$repo_dir/$path" ]]; then
+            log "missing upstream agent file: $path"
+            continue
+        fi
+        slug="$(agent_slug "$repo_dir/$path")"
+        if [[ -n "$slug" ]]; then
+            printf '%s\n' "$slug" >> "$output"
+        else
+            log "could not derive agent slug from: $path"
+        fi
+    done
+
+    sort -u -o "$output" "$output"
+}
+
+cleanup_old_external_files() {
+    local base="$1"
+    shift
+    local path dir name old_file
+
+    for path in "$@"; do
+        [[ "$path" == *.md ]] || continue
+        dir="$(dirname "$path")"
+        name="$(basename "$path" .md)"
+        old_file="$base/$dir/$name.md"
+        if [[ -f "$old_file" ]]; then
+            rm -f "$old_file"
+        fi
+    done
+}
+
+install_for_tool() {
+    local tool="$1"
+    local agents_file="$2"
+
+    if [[ ! -s "$agents_file" ]]; then
+        log "$tool: no selected agents, skipping"
+        return 0
+    fi
+
+    if [[ "$tool" == "claude-code" ]] && ! command -v claude &>/dev/null && [[ ! -d "$HOME/.claude" ]]; then
+        log "Claude Code not detected, skipping"
+        return 0
+    fi
+
+    if [[ "$tool" == "codex" ]] && ! command -v codex &>/dev/null && [[ ! -d "$HOME/.codex" ]]; then
+        log "Codex not detected, skipping"
+        return 0
+    fi
+
+    log "Installing ${tool} agents..."
+    "$repo_dir/scripts/install.sh" --tool "$tool" --agents-file "$agents_file" --no-interactive
+}
+
+main() {
+    have_any_paths || {
+        log "no agency-agents entries configured"
+        return 0
+    }
+
+    ensure_repo || return 0
+
+    local tmp_dir claude_agents_file codex_agents_file
+    tmp_dir="$(mktemp -d)"
+    trap "rm -rf '$tmp_dir'" EXIT
+    claude_agents_file="$tmp_dir/claude-agents.txt"
+    codex_agents_file="$tmp_dir/codex-agents.txt"
+
+    write_agents_file "$claude_agents_file" "${claude_paths[@]}"
+    write_agents_file "$codex_agents_file" "${codex_paths[@]}"
+
+    cleanup_old_external_files "$HOME/.claude/agents" "${claude_paths[@]}"
+    cleanup_old_external_files "$HOME/.codex/agents" "${codex_paths[@]}"
+
+    if [[ -s "$codex_agents_file" ]]; then
+        log "Generating Codex integration files..."
+        "$repo_dir/scripts/convert.sh" --tool codex
+    fi
+
+    install_for_tool "claude-code" "$claude_agents_file"
+    install_for_tool "codex" "$codex_agents_file"
+}
+
+main "$@"
