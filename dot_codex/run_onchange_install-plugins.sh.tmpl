@@ -1,0 +1,37 @@
+#!/bin/bash
+# Auto-generated from .chezmoidata/manifest.toml — DO NOT EDIT MANUALLY
+# Codexプラグインリストが変更された時に chezmoi apply で自動実行（run_onchange_）
+# Claude の dot_claude/run_onchange_install-plugins.sh.tmpl とは別機構（codex plugin CLI）。
+
+set -euo pipefail
+
+if ! command -v codex &>/dev/null; then
+    echo "[codex-plugins] codex CLI not found, skipping plugin installation"
+    exit 0
+fi
+
+# ─── マーケットプレイス登録 ───
+# 未登録のマーケットプレイスを自動登録（name はソースの marketplace.json の "name"）
+# reserved=true は Codex 同梱の予約marketplace（例: openai-curated）。
+# ソースから追加できないため登録をスキップし、plugin add のみ行う（codex login 後に解決）。
+registered=$(codex plugin marketplace list 2>/dev/null || true)
+{{- range .codex_marketplaces }}
+{{- if not (and (hasKey . "reserved") .reserved) }}
+
+if ! echo "$registered" | grep -qw "{{ .name }}"; then
+    echo "[codex-plugins] Registering marketplace: {{ .name }} ({{ .source }})..."
+    codex plugin marketplace add "{{ .source }}"{{ if hasKey . "ref" }} --ref "{{ .ref }}"{{ end }}{{ if hasKey . "sparse" }}{{ range .sparse }} --sparse "{{ . }}"{{ end }}{{ end }} || echo "[codex-plugins] Failed to register {{ .name }}"
+    registered=$(codex plugin marketplace list 2>/dev/null || true)
+fi
+{{- end }}
+{{- end }}
+
+# ─── プラグインインストール ───
+echo "[codex-plugins] Installing Codex plugins..."
+
+{{ range .codex_plugins -}}
+echo "[codex-plugins] Installing {{ .name }}@{{ .marketplace }}..."
+codex plugin add "{{ .name }}@{{ .marketplace }}" || echo "[codex-plugins] {{ .name }}: already installed or failed"
+{{ end -}}
+
+echo "[codex-plugins] Done. Restart Codex to apply changes."

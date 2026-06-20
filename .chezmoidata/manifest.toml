@@ -14,17 +14,17 @@
 #   refreshPeriod  - branch追跡時の再取得間隔（任意。例: "168h"）
 #
 # [[agents]]       - エージェント定義（単一.mdファイルとして取得）
-#   name           - ファイル名（拡張子なし。配置先: ~/.claude/agents/{name}.md）
+#   name           - ファイル名（拡張子なし。配置先: {target}/agents/{name}.md）
 #   repo           - repos.* のキー名
 #   ref            - git tag / branch / commit SHA
 #   path           - リポジトリ内の.mdファイルパス
-#   targets        - インストール先 ["claude"]
+#   targets        - インストール先 ["codex"], ["claude"], ["codex","claude"]
 #   refreshPeriod  - 任意
 #
-# [[plugins]]      - Claude Code プラグイン定義（chezmoi apply 時に自動インストール）
-#   name           - プラグイン名
-#   marketplace       - レジストリ名（例: "anthropics/claude-plugins-official"）
-#   scope          - インストールスコープ: "user"(デフォルト), "project", "local"
+# [[claude_marketplaces]] / [[claude_plugins]] - Claude Code プラグイン（chezmoi apply 時に自動インストール）
+#   marketplaces: name（登録名 = .claude-plugin/marketplace.json の "name"）, source（owner/repo）
+#   plugins:      name, marketplace（claude_marketplaces の name を参照）, scope（任意）
+# [[codex_marketplaces]] / [[codex_plugins]] - Codex プラグイン（別機構。下部の節を参照）
 
 # ─── リポジトリ定義 ───
 
@@ -56,7 +56,7 @@ name = "plugin-creator"
 repo = "openai-skills"
 ref = "main"
 path = "skills/.system/plugin-creator"
-targets = ["codex", "claude"]
+targets = ["codex"]
 refreshPeriod = "168h"
 
 [[skills]]
@@ -64,7 +64,7 @@ name = "skill-creator"
 repo = "openai-skills"
 ref = "main"
 path = "skills/.system/skill-creator"
-targets = ["codex", "claude"]
+targets = ["codex"]
 refreshPeriod = "168h"
 
 [[skills]]
@@ -95,7 +95,7 @@ refreshPeriod = "168h"
 # repo = "agency-agents"
 # ref = "main"
 # path = "engineering/engineering-backend-architect.md"
-# targets = ["claude"]
+# targets = ["codex", "claude"]
 # refreshPeriod = "168h"
 
 # ディレクトリまるごと: path が .md で終わらない → archive取得
@@ -104,7 +104,7 @@ name = "design-ux-architect"
 repo = "agency-agents"
 ref = "main"
 path = "design/design-ux-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -112,7 +112,7 @@ name = "design-ux-researcher"
 repo = "agency-agents"
 ref = "main"
 path = "design/design-ux-researcher.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -120,7 +120,7 @@ name = "engineering-autonomous-optimization-architect"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-autonomous-optimization-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -128,7 +128,7 @@ name = "engineering-backend-architect"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-backend-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -136,7 +136,7 @@ name = "engineering-code-reviewer"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-code-reviewer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -144,7 +144,7 @@ name = "engineering-devops-automator"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-devops-automator.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -152,7 +152,7 @@ name = "engineering-frontend-developer"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-frontend-developer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -160,7 +160,7 @@ name = "engineering-git-workflow-master"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-git-workflow-master.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -168,7 +168,7 @@ name = "engineering-incident-response-commander"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-incident-response-commander.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -176,7 +176,7 @@ name = "security-architect"
 repo = "agency-agents"
 ref = "main"
 path = "security/security-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -184,7 +184,7 @@ name = "engineering-software-architect"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-software-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -192,7 +192,7 @@ name = "engineering-sre"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-sre.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -200,7 +200,7 @@ name = "engineering-technical-writer"
 repo = "agency-agents"
 ref = "main"
 path = "engineering/engineering-technical-writer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -208,7 +208,7 @@ name = "security-threat-detection-engineer"
 repo = "agency-agents"
 ref = "main"
 path = "security/security-threat-detection-engineer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -216,7 +216,7 @@ name = "product-product-manager"
 repo = "agency-agents"
 ref = "main"
 path = "product/product-manager.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -224,7 +224,7 @@ name = "project-management-project-management-experiment-tracker"
 repo = "agency-agents"
 ref = "main"
 path = "project-management/project-management-experiment-tracker.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -232,7 +232,7 @@ name = "project-management-project-manager-senior"
 repo = "agency-agents"
 ref = "main"
 path = "project-management/project-manager-senior.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -240,7 +240,7 @@ name = "specialized-agents-orchestrator"
 repo = "agency-agents"
 ref = "main"
 path = "specialized/agents-orchestrator.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -248,7 +248,7 @@ name = "security-blockchain-security-auditor"
 repo = "agency-agents"
 ref = "main"
 path = "security/security-blockchain-security-auditor.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -256,7 +256,7 @@ name = "specialized-developer-advocate"
 repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-developer-advocate.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -264,7 +264,7 @@ name = "specialized-document-generator"
 repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-document-generator.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -272,7 +272,7 @@ name = "specialized-workflow-architect"
 repo = "agency-agents"
 ref = "main"
 path = "specialized/specialized-workflow-architect.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -280,7 +280,7 @@ name = "support-infrastructure-maintainer"
 repo = "agency-agents"
 ref = "main"
 path = "support/support-infrastructure-maintainer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -288,7 +288,7 @@ name = "testing-api-tester"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-api-tester.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -296,7 +296,7 @@ name = "testing-performance-benchmarker"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-performance-benchmarker.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -304,7 +304,7 @@ name = "testing-reality-checker"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-reality-checker.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -312,7 +312,7 @@ name = "testing-test-results-analyzer"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-test-results-analyzer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -320,7 +320,7 @@ name = "testing-tool-evaluator"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-tool-evaluator.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 [[agents]]
@@ -328,49 +328,101 @@ name = "testing-workflow-optimizer"
 repo = "agency-agents"
 ref = "main"
 path = "testing/testing-workflow-optimizer.md"
-targets = ["claude"]
+targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
 # ─── Claude Code プラグイン ───
-# chezmoi apply 時に run_onchange スクリプトで自動インストール
+# chezmoi apply 時に run_onchange スクリプトで自動インストール（dot_claude/run_onchange_install-plugins.sh.tmpl）
 # 未登録のマーケットプレイスも自動登録される
 #
-# [[plugins]]
-# name = "code-review"
-# marketplace = "anthropics/claude-plugins-official"
+# [[claude_marketplaces]] - Claude marketplace（プラグイン取得元）定義
+#   name    - 登録marketplace名。ソースの .claude-plugin/marketplace.json の "name" と一致させること
+#             （`claude plugin install <plugin>@<name>` の参照に使用）
+#   source  - marketplaceソース（owner/repo）
+#
+# [[claude_plugins]]      - Claude プラグイン定義
+#   name        - プラグイン名
+#   marketplace - 参照する claude_marketplaces の name
+#   scope       - インストールスコープ: "user"(デフォルト), "project", "local"
 
-[[plugins]]
+[[claude_marketplaces]]
+name = "claude-plugins-official"
+source = "anthropics/claude-plugins-official"
+
+[[claude_marketplaces]]
+name = "openai-codex"
+source = "openai/codex-plugin-cc"
+
+[[claude_plugins]]
 name = "code-review"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "commit-commands"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "context7"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "security-guidance"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "claude-md-management"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "feature-dev"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "code-simplifier"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "skill-creator"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
 
-[[plugins]]
+[[claude_plugins]]
 name = "superpowers"
-marketplace = "anthropics/claude-plugins-official"
+marketplace = "claude-plugins-official"
+
+[[claude_plugins]]
+name = "codex"
+marketplace = "openai-codex"
+
+# ─── Codex プラグイン ───
+# Claude の [[claude_plugins]] とは別機構（`codex plugin` CLI）。設定先も ~/.codex で分離。
+# chezmoi apply 時に dot_codex/run_onchange_install-plugins.sh.tmpl が自動実行。
+#
+# [[codex_marketplaces]] - Codex marketplace（プラグイン取得元）定義
+#   name      - marketplace名。ソースの .agents/plugins/marketplace.json の "name" と一致させること
+#               （`codex plugin add <plugin>@<name>` の参照・冪等判定・削除に使用）
+#   source    - owner/repo / Git URL / ローカルパス（reserved=true の場合は不要）
+#   ref       - git ref（任意。Gitソース時）
+#   sparse    - sparse checkout パス（任意・複数可。Gitソース時）
+#   reserved  - true の場合、Codex同梱の予約marketplace。`marketplace add` をスキップする
+#               （例: "openai-curated"。`codex login` 後にバックエンドから配信される）
+#
+# [[codex_plugins]]      - Codex プラグイン定義
+#   name        - プラグイン名（marketplace内の "name"）
+#   marketplace - 参照する codex_marketplaces の name
+
+# openai-curated は Codex 予約marketplace。`codex login` 後に利用可能になる。
+[[codex_marketplaces]]
+name = "openai-curated"
+reserved = true
+
+[[codex_plugins]]
+name = "superpowers"
+marketplace = "openai-curated"
+
+[[codex_plugins]]
+name = "build-web-apps"
+marketplace = "openai-curated"
+
+[[codex_plugins]]
+name = "github"
+marketplace = "openai-curated"
