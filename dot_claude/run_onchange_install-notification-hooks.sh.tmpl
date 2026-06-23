@@ -1,0 +1,73 @@
+#!/bin/bash
+set -euo pipefail
+
+settings_file="${HOME}/.claude/settings.json"
+hook_command="${HOME}/.claude/hooks/notify-agent-attention.sh"
+
+mkdir -p "${HOME}/.claude"
+if [ ! -f "${settings_file}" ]; then
+  printf '{}\n' > "${settings_file}"
+fi
+
+python3 - "${settings_file}" "${hook_command}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+settings_path = Path(sys.argv[1])
+hook_command = sys.argv[2]
+
+with settings_path.open("r", encoding="utf-8") as f:
+    data = json.load(f)
+
+hooks = data.setdefault("hooks", {})
+
+
+def ensure_hook(event_name, matcher):
+    event_hooks = hooks.setdefault(event_name, [])
+    target = None
+    for group in event_hooks:
+        if not isinstance(group, dict):
+            continue
+        if matcher is None:
+            if "matcher" not in group:
+                target = group
+                break
+        elif group.get("matcher") == matcher:
+            target = group
+            break
+
+    if target is None:
+        target = {}
+        if matcher is not None:
+            target["matcher"] = matcher
+        target["hooks"] = []
+        event_hooks.append(target)
+
+    handlers = target.setdefault("hooks", [])
+    for handler in handlers:
+        if (
+            isinstance(handler, dict)
+            and handler.get("type") == "command"
+            and handler.get("command") == hook_command
+        ):
+            handler["timeout"] = 5
+            return
+
+    handlers.append(
+        {
+            "type": "command",
+            "command": hook_command,
+            "timeout": 5,
+        }
+    )
+
+
+ensure_hook("Notification", "permission_prompt")
+ensure_hook("Stop", None)
+ensure_hook("TaskCompleted", None)
+
+with settings_path.open("w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PY
