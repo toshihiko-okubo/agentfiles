@@ -43,6 +43,10 @@ name = "skills"
 owner = "vercel-labs"
 name = "skills"
 
+[repos.mattpocock-skills]
+owner = "mattpocock"
+name = "skills"
+
 [repos.agency-agents]
 owner = "msitarzewski"
 name = "agency-agents"
@@ -87,6 +91,22 @@ name = "find-skills"
 repo = "vercel-labs-skills"
 ref = "main"
 path = "skills/find-skills"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+[[skills]]
+name = "grill-me"
+repo = "mattpocock-skills"
+ref = "main"
+path = "skills/productivity/grill-me"
+targets = ["codex", "claude"]
+refreshPeriod = "168h"
+
+[[skills]]
+name = "grilling"
+repo = "mattpocock-skills"
+ref = "main"
+path = "skills/productivity/grilling"
 targets = ["codex", "claude"]
 refreshPeriod = "168h"
 
